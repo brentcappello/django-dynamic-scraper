@@ -17,7 +17,8 @@ class TaskUtils():
             'spider': kwargs['spider'],
             'id': kwargs['id'],
             'run_type': kwargs['run_type'],
-            'do_action': kwargs['do_action']
+            'do_action': kwargs['do_action'],
+            'term': kwargs['term']
         }
         params = urllib.urlencode(param_dict)
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
@@ -26,7 +27,7 @@ class TaskUtils():
         conn.getresponse()
     
     
-    def run_spiders(self, ref_obj_class, scraper_field_name, runtime_field_name, spider_name):
+    def run_spiders(self, ref_obj_class, scraper_field_name, runtime_field_name, spider_name, term):
         
         kwargs = {
             '%s__status' % scraper_field_name: 'A',
@@ -36,7 +37,7 @@ class TaskUtils():
         max = settings.get('DSCRAPER_MAX_SPIDER_RUNS_PER_TASK', self.conf['MAX_SPIDER_RUNS_PER_TASK'])
         ref_obj_list = ref_obj_class.objects.filter(**kwargs).order_by('%s__next_action_time' % runtime_field_name)[:max]
         for ref_object in ref_obj_list:
-            self._run_spider(id=ref_object.id, spider=spider_name, run_type='TASK', do_action='yes')
+            self._run_spider(id=ref_object.id, spider=spider_name, run_type='TASK', do_action='yes', term=term)
         
 
     def run_checkers(self, ref_obj_class, scraper_field_path, runtime_field_name, checker_name):
