@@ -19,7 +19,10 @@ http://stackoverflow.com/questions/4435016/install-pil-on-virtualenv-with-libjpe
 '''
 class DjangoImagesPipeline(ImagesPipeline):
     
+    searchterm = ''
+    
     def get_media_requests(self, item, info):
+        DjangoImagesPipeline.searchterm = info.spider.search_terms
         try:
             img_elem = info.spider.scraper.get_image_elem()
             if img_elem.scraped_obj_attr.name in item and item[img_elem.scraped_obj_attr.name]:
@@ -28,7 +31,10 @@ class DjangoImagesPipeline(ImagesPipeline):
             pass
 
     def image_key(self, url):
-        image_guid = hashlib.sha1(url).hexdigest()
+       # image_guid = hashlib.sha1(url).hexdigest()
+        hasher = '_' + hashlib.sha1(url).hexdigest()
+        hasher_trunk = hasher[:5]
+        image_guid = self.searchterm + hasher_trunk
         return '%s.jpg' % (image_guid)
 
     def thumb_key(self, url, thumb_id):
