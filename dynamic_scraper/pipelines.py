@@ -19,10 +19,10 @@ http://stackoverflow.com/questions/4435016/install-pil-on-virtualenv-with-libjpe
 '''
 class DjangoImagesPipeline(ImagesPipeline):
     
-    searchterm = ''
+    searchterm = 'cool'
     
     def get_media_requests(self, item, info):
-        DjangoImagesPipeline.searchterm = info.spider.search_terms
+#        DjangoImagesPipeline.searchterm = info.spider.search_terms
         try:
             img_elem = info.spider.scraper.get_image_elem()
             if img_elem.scraped_obj_attr.name in item and item[img_elem.scraped_obj_attr.name]:
